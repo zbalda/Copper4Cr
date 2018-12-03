@@ -2,7 +2,7 @@
 // Update the count down every 1 second
 var update = setInterval(function() {
 
-  document.getElementById("climateControlInput").onclick = function() {updateClimateControl()};
+  document.getElementById("climateControlButton").onclick = function() {updateClimateControl()};
   document.getElementById("targetTemperatureInput").oninput = function() {updateTargetTemperature()};
 
   document.getElementById("temperature").innerHTML = getTemperature();
@@ -15,22 +15,42 @@ var update = setInterval(function() {
   }
 }, 3000);
 
+var controlClimate = true;
+
 function updateClimateControl() {
-  // TODO: send POST to update climate control status
-  console.log(document.getElementById("climateControlInput").checked);
+
+  // toggle button boolean
+  if (controlClimate) {
+    controlClimate = false;
+  } else {
+    controlClimate = true;
+  }
+
+  // update button text and style
+  if (controlClimate) {
+    document.getElementById("climateControlButton").innerHTML = "Turn Climate Control System Off"
+    document.getElementById("climateControlButton").className = "btn btn-danger";
+    document.getElementById("dimmable").className = "";
+  } else {
+    document.getElementById("climateControlButton").innerHTML = "Turn Climate Control System On"
+    document.getElementById("climateControlButton").className = "btn btn-success";
+    document.getElementById("dimmable").className = "dimmed";
+  }
+  // TODO: send POST to update climate control status with control climate var
 }
 
 function updateTargetTemperature() {
   // TODO: send POST to update target temperature
   targetTemperature = document.getElementById("targetTemperatureInput").value
-  document.getElementById("targetTemperature").innerHTML = targetTemperature;
+  document.getElementById("targetTemperature").innerHTML = (targetTemperature + "° C");
 }
 
 
 function getTemperature() {
   // TODO: GET temperature from server
-  temperature = "75";
+  temperature = "20";
   temperature = Number(temperature);
+  temperature = temperature + "° C";
 
   return temperature;
 }

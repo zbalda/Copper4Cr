@@ -3,7 +3,7 @@
 var update = setInterval(function() {
 
   document.getElementById("climateControlInput").onclick = function() {updateClimateControl()};
-  document.getElementById("targetTemperatureInput").onchange = function() {updateTargetTemperature()};
+  document.getElementById("targetTemperatureInput").oninput = function() {updateTargetTemperature()};
 
   document.getElementById("temperature").innerHTML = getTemperature();
   document.getElementById("heaterStatus").innerHTML = getHeaterStatus();
@@ -28,6 +28,7 @@ function updateTargetTemperature() {
 
 
 function getTemperature() {
+  // TODO: GET temperature from server
   temperature = "75";
   temperature = Number(temperature);
 

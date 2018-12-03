@@ -1,3 +1,4 @@
+var controlClimate = true;
 
 // Update the count down every 1 second
 var update = setInterval(function() {
@@ -14,8 +15,6 @@ var update = setInterval(function() {
     clearInterval(x);
   }
 }, 3000);
-
-var controlClimate = true;
 
 function updateClimateControl() {
 
@@ -47,8 +46,8 @@ function updateTargetTemperature() {
 
 
 function getTemperature() {
-  // TODO: GET temperature from server
-  temperature = "20";
+  document.getElementById("copper-toolbar-get").click();
+  temperature = document.getElementById("copper-payload-tab-in").innerHTML;
   temperature = Number(temperature);
   temperature = temperature + "° C";
 
@@ -56,8 +55,8 @@ function getTemperature() {
 }
 
 function getHeaterStatus() {
-  // TODO: GET heater status from server
-  heaterStatus = "on";
+  document.getElementById("copper-toolbar-get").click();
+  heaterStatus = document.getElementById("copper-payload-tab-in").innerHTML;
   heaterStatus = heaterStatus.toUpperCase();
 
   if (heaterStatus === "ON") {
@@ -69,8 +68,8 @@ function getHeaterStatus() {
 }
 
 function getFanStatus() {
-  // TODO: GET fan status from server
-  fanStatus = "on";
+  document.getElementById("copper-toolbar-get").click();
+  fanStatus = document.getElementById("copper-payload-tab-in").innerHTML;
   fanStatus = fanStatus.toUpperCase();
 
   if (fanStatus === "ON") {

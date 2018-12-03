@@ -1,5 +1,8 @@
 var controlClimate = true;
 
+var baseURL = "chrome-extension://poachhgcefcgdajncinehopdcghbchgm/app.html";
+var serverURL = "?coap%3A%2F%2F192.168.0.32%3A5683%2F";
+
 // Update the count down every 1 second
 var update = setInterval(function() {
 
@@ -46,6 +49,7 @@ function updateTargetTemperature() {
 
 
 function getTemperature() {
+  window.location.href = baseURL + serverURL + "temperature";
   document.getElementById("copper-toolbar-get").click();
   temperature = document.getElementById("copper-payload-tab-in").innerHTML;
   temperature = Number(temperature);
@@ -55,6 +59,7 @@ function getTemperature() {
 }
 
 function getHeaterStatus() {
+  window.location.href = baseURL + serverURL + "heater";
   document.getElementById("copper-toolbar-get").click();
   heaterStatus = document.getElementById("copper-payload-tab-in").innerHTML;
   heaterStatus = heaterStatus.toUpperCase();
@@ -68,6 +73,7 @@ function getHeaterStatus() {
 }
 
 function getFanStatus() {
+  window.location.href = baseURL + serverURL + "fan";
   document.getElementById("copper-toolbar-get").click();
   fanStatus = document.getElementById("copper-payload-tab-in").innerHTML;
   fanStatus = fanStatus.toUpperCase();

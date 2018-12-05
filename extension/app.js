@@ -1,17 +1,14 @@
 var controlClimate = true;
-
-var baseURL = "chrome-extension://poachhgcefcgdajncinehopdcghbchgm/app.html";
-var serverURL = "?coap%3A%2F%2F192.168.0.32%3A5683%2F";
+var targetTemperature = 20;
 
 // Update the count down every 1 second
 var update = setInterval(function() {
 
-  document.getElementById("climateControlButton").onclick = function() {updateClimateControl()};
-  document.getElementById("targetTemperatureInput").oninput = function() {updateTargetTemperature()};
+  document.getElementById("climateControlButton").onclick = function() {controlClimateButton()};
+  document.getElementById("targetTemperatureInput").oninput = function() {targetTemperatureSlider()};
 
-  document.getElementById("temperature").innerHTML = getTemperature();
-  document.getElementById("heaterStatus").innerHTML = getHeaterStatus();
-  document.getElementById("fanStatus").innerHTML = getFanStatus();
+  // update server and UI
+  updateState()
 
   // How to stop interval
   if (false) {
@@ -19,8 +16,45 @@ var update = setInterval(function() {
   }
 }, 3000);
 
-function updateClimateControl() {
+function updateState() {
+  document.getElementById("copper-payload-tab-out").value = (controlClimate + ' ' + targetTemperature);
+  document.getElementById("copper-toolbar-post").click();
+  response = document.getElementById("copper-payload-tab-in").innerHTML;
+  if(response !== ""){
+    // parse JSON
+    var responseObj = JSON.parse(response);
 
+    // get temperature
+    temperature = responseObj.temperature;
+    temperature = Number(temperature);
+    tempF = (temperature * (9/5)) + 32;
+    tempF = Math.round(tempF);
+    temperature = temperature + "° C";
+    tempF = tempF + "° F";
+
+    // get heaterStatus
+    heaterStatus = responseObj.heaterStatus;
+    heaterStatus = heaterStatus.toUpperCase();
+    if (!(heaterStatus === "ON" || heaterStatus === "OFF")) {
+      heaterStatus = "unknown";
+    }
+
+    // get fanStatus
+    fanStatus = responseObj.fanStatus;
+    fanStatus = fanStatus.toUpperCase();
+    if (!(fanStatus === "ON" || fanStatus === "OFF")) {
+      fanStatus = "unknown";
+    }
+
+    // update page
+    document.getElementById("temperature").innerHTML = temperature;
+    document.getElementById("tempF").innerHTML = tempF;
+    document.getElementById("heaterStatus").innerHTML = heaterStatus;
+    document.getElementById("fanStatus").innerHTML = fanStatus;
+  }
+}
+
+function controlClimateButton() {
   // toggle button boolean
   if (controlClimate) {
     controlClimate = false;
@@ -38,50 +72,12 @@ function updateClimateControl() {
     document.getElementById("climateControlButton").className = "btn btn-success";
     document.getElementById("dimmable").className = "dimmed";
   }
-  // TODO: send POST to update climate control status with control climate var
 }
 
-function updateTargetTemperature() {
-  // TODO: send POST to update target temperature
-  targetTemperature = document.getElementById("targetTemperatureInput").value
-  document.getElementById("targetTemperature").innerHTML = (targetTemperature + "° C");
-}
-
-
-function getTemperature() {
-  window.location.href = baseURL + serverURL + "temperature";
-  document.getElementById("copper-toolbar-get").click();
-  temperature = document.getElementById("copper-payload-tab-in").innerHTML;
-  temperature = Number(temperature);
-  temperature = temperature + "° C";
-
-  return temperature;
-}
-
-function getHeaterStatus() {
-  window.location.href = baseURL + serverURL + "heater";
-  document.getElementById("copper-toolbar-get").click();
-  heaterStatus = document.getElementById("copper-payload-tab-in").innerHTML;
-  heaterStatus = heaterStatus.toUpperCase();
-
-  if (heaterStatus === "ON") {
-    return "on";
-  } else if (heaterStatus === "OFF") {
-    return "off";
-  }
-  return "unknown"
-}
-
-function getFanStatus() {
-  window.location.href = baseURL + serverURL + "fan";
-  document.getElementById("copper-toolbar-get").click();
-  fanStatus = document.getElementById("copper-payload-tab-in").innerHTML;
-  fanStatus = fanStatus.toUpperCase();
-
-  if (fanStatus === "ON") {
-    return "on";
-  } else if (fanStatus === "OFF") {
-    return "off";
-  }
-  return "unknown"
+function targetTemperatureSlider() {
+  targetTemperature = document.getElementById("targetTemperatureInput").value;
+  targetTemperatureF = ((targetTemperature * (9/5)) + 32);
+  targetTemperatureF = Math.round(targetTemperatureF);
+  document.getElementById("targetTemperature").innerHTML = targetTemperature + "° C";
+  document.getElementById("targetTemperatureF").innerHTML = targetTemperatureF + "° F";
 }
